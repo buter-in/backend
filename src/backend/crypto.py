@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Any, Dict, Union
 
 from eth_account.datastructures import SignedMessage
 from eth_account.messages import encode_structured_data
@@ -46,7 +46,7 @@ def sign_message(message: Dict[str, Any]) -> SignedMessage:
     return signed
 
 
-def signed_message_to_dict(signed: SignedMessage) -> Dict[str, str]:
+def signed_message_to_dict(signed: SignedMessage) -> Dict[str, Union[str, int]]:
     return {
         "messageHash": signed.messageHash.hex(),
         "r": signed.r,
