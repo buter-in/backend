@@ -24,10 +24,10 @@ def gen_eip712_message(from_addr: str, to_addr: str, nonce: int, path: str):
         },
         "primaryType": "approveSBT",
         "domain": {
-            "name": "SBT",
+            "name": "SBToken Buterin",
             "version": "1",
-            "chainId": 31337,
-            "verifyingContract": "0x6B21b3ae41f818Fc91e322b53f8D0773d31eCB75",
+            "chainId": 80001,
+            "verifyingContract": "0x9fc7cbe0aebb56d1a9f01a79ecfa3c32032021ae",
         },
         "message": {"emitent": from_addr, "to": to_addr, "nonce": nonce, "path": path},
     }
