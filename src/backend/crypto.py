@@ -44,3 +44,13 @@ def sign_message(message: Dict[str, Any]) -> SignedMessage:
 
     signed = account.sign_message(encode_structured_data(message))
     return signed
+
+
+def signed_message_to_dict(signed: SignedMessage) -> Dict[str, str]:
+    return {
+        "messageHash": signed.messageHash.hex(),
+        "r": signed.r,
+        "s": signed.s,
+        "v": signed.v,
+        "signature": signed.signature.hex(),
+    }

@@ -4,7 +4,8 @@ import json
 from fastapi import FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
 
-from backend.crypto import gen_eip712_message, sign_message
+from backend.crypto import (gen_eip712_message, sign_message,
+                            signed_message_to_dict)
 from backend.ipfs import (get_vitalik_image_hash, ipfs_gateway_path,
                           upload_to_ipfs)
 from backend.pathfind import get_shortest_path
@@ -33,23 +34,10 @@ async def root():
 async def sbt_emitent_signature(
     from_addr: str = Query(..., regex="^0x[0-9a-fA-F]{40}$"),
     to_addr: str = Query(..., regex="^0x[0-9a-fA-F]{40}$"),
+    nonce: int = Query(..., ge=0),
 ):
     paths = await get_shortest_path(from_addr=from_addr, to_addr=to_addr)
     ipfs_hash = get_vitalik_image_hash(is_bro=bool(paths))
-
-    message = gen_eip712_message(
-        to_addr=from_addr,
-        nonce=0,
-        path=f"ipfs://{ipfs_hash}",
-    )
-    signed = sign_message(message=message)
-    signed_dict = {
-        "messageHash": signed.messageHash.hex(),
-        "r": signed.r,
-        "s": signed.s,
-        "v": signed.v,
-        "signature": signed.signature.hex(),
-    }
 
     json_data = {
         "image": f"ipfs://{ipfs_hash}",
@@ -60,6 +48,15 @@ async def sbt_emitent_signature(
     }
     json_data_dump = json.dumps(json_data, ensure_ascii=False).encode()
     ipfs_hash = (await upload_to_ipfs(data=json_data_dump))["Hash"]
+
+    message = gen_eip712_message(
+        to_addr=from_addr,
+        nonce=0,
+        path=f"ipfs://{ipfs_hash}",
+    )
+    signed = sign_message(message=message)
+    signed_dict = signed_message_to_dict(signed=signed)
+
     return {
         **json_data,
         "message": message,
