@@ -4,9 +4,9 @@ import json
 from fastapi import FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
 
-
 from backend.crypto import gen_eip712_message, sign_message
-from backend.ipfs import upload_to_ipfs, ipfs_gateway_path, get_vitalik_image_hash
+from backend.ipfs import (get_vitalik_image_hash, ipfs_gateway_path,
+                          upload_to_ipfs)
 from backend.pathfind import get_shortest_path
 
 API = "https://ipfs-api.quantor.me/api/v0"
