@@ -29,7 +29,7 @@ def gen_eip712_message(to_addr: str, nonce: int, path: str):
             "verifyingContract": "0x9fc7cbe0aebb56d1a9f01a79ecfa3c32032021ae",
         },
         "message": {
-            "emitent": "0xda32C0d780e780e6FcD1EF5d0d9e98A311F736f1",
+            "emitent": "0xda32c0d780e780e6fcd1ef5d0d9e98a311f736f1",
             "to": to_addr,
             "nonce": nonce,
             "path": path,
