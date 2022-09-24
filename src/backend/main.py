@@ -46,7 +46,7 @@ async def sbt_emitent_signature(
 
     message = gen_eip712_message(
         to_addr=from_addr,
-        nonce=0,
+        nonce=nonce,
         path=f"ipfs://{ipfs_hash}",
     )
     signed = sign_message(message=message)
