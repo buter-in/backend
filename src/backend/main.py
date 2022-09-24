@@ -10,11 +10,6 @@ from backend.ipfs import (get_vitalik_image_hash, ipfs_gateway_path,
                           upload_to_ipfs)
 from backend.pathfind import get_shortest_path
 
-API = "https://ipfs-api.quantor.me/api/v0"
-IMG_BRO_HASH = "Qmbgmgg5xyfX7TCUgMhecBv8MhZeS9hnxTwD86AnCayq8z"
-IMG_NEWB_HASH = "QmdpLaMgL7yFjt2rUtQ1cDVyzmsVLRFwoYMBpXJxtHRYWp"
-
-
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
