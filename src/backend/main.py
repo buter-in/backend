@@ -3,6 +3,7 @@ import asyncio
 import json
 
 from fastapi import FastAPI, Query
+from fastapi.middleware.cors import CORSMiddleware
 from web3 import Web3
 import httpx
 
@@ -88,6 +89,13 @@ async def get_shortest_path(from_addr: str, to_addr: str) -> List[str]:
 
 
 app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.get("/ping")
