@@ -1,12 +1,11 @@
 from typing import Any, Dict
 
-from web3 import Web3
-
 from eth_account.datastructures import SignedMessage
 from eth_account.messages import encode_structured_data
+from web3 import Web3
 
 
-def gen_eip712_message(from_addr: str, to_addr: str, nonce: int, path: str):
+def gen_eip712_message(to_addr: str, nonce: int, path: str):
     return {
         "types": {
             "EIP712Domain": [
@@ -29,13 +28,18 @@ def gen_eip712_message(from_addr: str, to_addr: str, nonce: int, path: str):
             "chainId": 80001,
             "verifyingContract": "0x9fc7cbe0aebb56d1a9f01a79ecfa3c32032021ae",
         },
-        "message": {"emitent": from_addr, "to": to_addr, "nonce": nonce, "path": path},
+        "message": {
+            "emitent": "0xda32C0d780e780e6FcD1EF5d0d9e98A311F736f1",
+            "to": to_addr,
+            "nonce": nonce,
+            "path": path,
+        },
     }
 
 
 def sign_message(message: Dict[str, Any]) -> SignedMessage:
     w3 = Web3()
-    priv_key = "59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d"
+    priv_key = "54fe55fa9c4ac5a845f2d9033ae9ff50d9f855edcdcb670821b0a447f7c19a43"
     w3.eth.default_account = w3.eth.account.privateKeyToAccount(priv_key)
 
     signed = w3.eth.default_account.sign_message(encode_structured_data(message))

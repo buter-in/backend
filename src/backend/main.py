@@ -38,7 +38,6 @@ async def sbt_emitent_signature(
     ipfs_hash = IMG_BRO_HASH if paths else IMG_NEWB_HASH
 
     message = gen_eip712_message(
-        from_addr=from_addr,
         to_addr=to_addr,
         nonce=0,
         path=f"ipfs://{ipfs_hash}",
