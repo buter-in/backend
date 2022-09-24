@@ -1,17 +1,12 @@
-from typing import Dict
+from typing import Dict, Any
 
 import httpx
-
-
-API = "https://ipfs-api.quantor.me/api/v0"
-IMG_BRO_HASH = "Qmbgmgg5xyfX7TCUgMhecBv8MhZeS9hnxTwD86AnCayq8z"
-IMG_NEWB_HASH = "QmdpLaMgL7yFjt2rUtQ1cDVyzmsVLRFwoYMBpXJxtHRYWp"
 
 
 async def upload_to_ipfs(data: bytes) -> Dict[str, str]:
     async with httpx.AsyncClient() as client:
         response = await client.post(
-            f"{API}/add",
+            f"https://ipfs-api.quantor.me/api/v0/add",
             params={
                 "pin": "true",
                 "wrap-with-directory": "false",
@@ -20,3 +15,13 @@ async def upload_to_ipfs(data: bytes) -> Dict[str, str]:
         )
 
         return response.json()
+
+
+def ipfs_gateway_path(cid: str) -> str:
+    return f"https://ipfs.io/ipfs/{cid}"
+
+
+def get_vitalik_image_hash(is_bro: Any) -> str:
+    bro = "Qmbgmgg5xyfX7TCUgMhecBv8MhZeS9hnxTwD86AnCayq8z"
+    newb = "QmdpLaMgL7yFjt2rUtQ1cDVyzmsVLRFwoYMBpXJxtHRYWp"
+    return [newb, bro][bool(is_bro)]
