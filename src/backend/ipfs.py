@@ -21,7 +21,7 @@ def ipfs_gateway_path(cid: str) -> str:
     return f"https://ipfs.io/ipfs/{cid}"
 
 
-def get_vitalik_image_hash(is_bro: Any) -> str:
+def get_vitalik_image_hash(is_bro: bool) -> str:
     bro = "Qmbgmgg5xyfX7TCUgMhecBv8MhZeS9hnxTwD86AnCayq8z"
     newb = "QmdpLaMgL7yFjt2rUtQ1cDVyzmsVLRFwoYMBpXJxtHRYWp"
-    return [newb, bro][bool(is_bro)]
+    return [newb, bro][is_bro]

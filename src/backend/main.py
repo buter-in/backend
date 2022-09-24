@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 
 from backend.crypto import gen_eip712_message, sign_message
-from backend.ipfs import upload_to_ipfs
+from backend.ipfs import upload_to_ipfs, ipfs_gateway_path, get_vitalik_image_hash
 from backend.pathfind import get_shortest_path
 
 API = "https://ipfs-api.quantor.me/api/v0"
@@ -35,7 +35,7 @@ async def sbt_emitent_signature(
     to_addr: str = Query(..., regex="^0x[0-9a-fA-F]{40}$"),
 ):
     paths = await get_shortest_path(from_addr=from_addr, to_addr=to_addr)
-    ipfs_hash = IMG_BRO_HASH if paths else IMG_NEWB_HASH
+    ipfs_hash = get_vitalik_image_hash(is_bro=bool(paths))
 
     message = gen_eip712_message(
         to_addr=from_addr,
@@ -64,9 +64,9 @@ async def sbt_emitent_signature(
         **json_data,
         "message": message,
         "signed": signed_dict,
-        "image_gw": f"{API}/cat?arg={ipfs_hash}",
+        "image_gw": ipfs_gateway_path(cid=ipfs_hash),
         "json_ipfs": f"ipfs://{ipfs_hash}",
-        "json_gw": f"{API}/cat?arg={ipfs_hash}",
+        "json_gw": ipfs_gateway_path(cid=ipfs_hash),
     }
 
 

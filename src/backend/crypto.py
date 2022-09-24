@@ -39,8 +39,8 @@ def gen_eip712_message(to_addr: str, nonce: int, path: str):
 
 def sign_message(message: Dict[str, Any]) -> SignedMessage:
     w3 = Web3()
-    priv_key = "54fe55fa9c4ac5a845f2d9033ae9ff50d9f855edcdcb670821b0a447f7c19a43"
-    w3.eth.default_account = w3.eth.account.privateKeyToAccount(priv_key)
+    private_key = "54fe55fa9c4ac5a845f2d9033ae9ff50d9f855edcdcb670821b0a447f7c19a43"
+    account = w3.eth.account.privateKeyToAccount(private_key)
 
-    signed = w3.eth.default_account.sign_message(encode_structured_data(message))
+    signed = account.sign_message(encode_structured_data(message))
     return signed
