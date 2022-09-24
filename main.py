@@ -1,20 +1,16 @@
+from typing import Dict, Any, List
 import asyncio
 import json
-from fastapi import FastAPI
-import httpx
-from web3 import Web3
-from typing import Dict, Any, List
-from fastapi import APIRouter, Depends, Query, Body
-import random
 
-# from web3.middleware import geth_poa_middleware
-from eth_account.messages import encode_structured_data
+from fastapi import FastAPI, Query
+from web3 import Web3
+import httpx
+
 from eth_account.datastructures import SignedMessage
-import logging
+from eth_account.messages import encode_structured_data
 
 
 API = "https://ipfs-api.quantor.me/api/v0"
-LOG = logging.getLogger(__name__)
 IMG_BRO_HASH = "Qmbgmgg5xyfX7TCUgMhecBv8MhZeS9hnxTwD86AnCayq8z"
 IMG_NEWB_HASH = "QmdpLaMgL7yFjt2rUtQ1cDVyzmsVLRFwoYMBpXJxtHRYWp"
 
@@ -91,51 +87,19 @@ async def get_shortest_path(from_addr: str, to_addr: str) -> List[str]:
         return [head] + tail
 
 
-def gen_image(from_addr: str, to_addr: str) -> bytes:
-    random.seed(from_addr + to_addr)
-    img_id = random.randrange(1, 301)
-    img_url = f"https://picsum.photos/id/{img_id}/200/300"
-
-    response = httpx.get(img_url, follow_redirects=True)
-    return response.content
-
-
 app = FastAPI()
 
 
-# @app.get("/")
+@app.get("/ping")
 async def root():
-    return {"message": "Hello World"}
+    return "pong"
 
 
-async def get_sbt_emitent_signature(
+@app.post("/sbt_emitent_signature")
+async def sbt_emitent_signature(
     from_addr: str = Query(..., regex="^0x[0-9a-fA-F]{40}$"),
     to_addr: str = Query(..., regex="^0x[0-9a-fA-F]{40}$"),
 ):
-    image = gen_image(from_addr=from_addr, to_addr=to_addr)
-    ipfs_hash = (await upload_to_ipfs(data=image))["Hash"]
-    message = gen_eip712_message(
-        from_addr=from_addr,
-        to_addr=to_addr,
-        nonce=0,
-        path=ipfs_hash,
-    )
-    signed = sign_message(message=message)
-    return {
-        "image": f"{API}/cat?arg={ipfs_hash}",
-        "message": message,
-        "signed": signed,
-    }
-
-
-@app.get("/")
-async def get_sbt_emitent_signature_2(
-    from_addr: str = Query(..., regex="^0x[0-9a-fA-F]{40}$"),
-    to_addr: str = Query(..., regex="^0x[0-9a-fA-F]{40}$"),
-):
-    # image = gen_image(from_addr=from_addr, to_addr=to_addr)
-    # ipfs_hash = (await upload_to_ipfs(data=image))['Hash']
-    # json_hash =
     paths = await get_shortest_path(from_addr=from_addr, to_addr=to_addr)
     ipfs_hash = IMG_BRO_HASH if paths else IMG_NEWB_HASH
 
@@ -179,7 +143,7 @@ if __name__ == "__main__":
     to_addr = "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
 
     # x = asyncio.run(get_shortest_path(from_addr, to_addr))
-    x = asyncio.run(get_sbt_emitent_signature_2(from_addr, to_addr))
+    x = asyncio.run(sbt_emitent_signature(from_addr, to_addr))
     # x = asyncio.run(upload_to_ipfs(data=b"ayylmao"))
     print(x)
     exit(1)
