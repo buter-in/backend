@@ -67,8 +67,6 @@ if __name__ == "__main__":
     from_addr = "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
     to_addr = "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
 
-    # x = asyncio.run(get_shortest_path(from_addr, to_addr))
-    x = asyncio.run(sbt_emitent_signature(from_addr, to_addr))
-    # x = asyncio.run(upload_to_ipfs(data=b"ayylmao"))
-    print(x)
+    rez = asyncio.run(sbt_emitent_signature(from_addr, to_addr))
+    print(rez)
     exit(1)
