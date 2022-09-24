@@ -1,55 +1,17 @@
-from typing import Dict, Any, List
+from typing import Dict, List
 import asyncio
 import json
 
 from fastapi import FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
-from web3 import Web3
 import httpx
 
-from eth_account.datastructures import SignedMessage
-from eth_account.messages import encode_structured_data
 
+from backend.crypto import gen_eip712_message, sign_message
 
 API = "https://ipfs-api.quantor.me/api/v0"
 IMG_BRO_HASH = "Qmbgmgg5xyfX7TCUgMhecBv8MhZeS9hnxTwD86AnCayq8z"
 IMG_NEWB_HASH = "QmdpLaMgL7yFjt2rUtQ1cDVyzmsVLRFwoYMBpXJxtHRYWp"
-
-
-def gen_eip712_message(from_addr: str, to_addr: str, nonce: int, path: str):
-    return {
-        "types": {
-            "EIP712Domain": [
-                {"name": "name", "type": "string"},
-                {"name": "version", "type": "string"},
-                {"name": "chainId", "type": "uint256"},
-                {"name": "verifyingContract", "type": "address"},
-            ],
-            "approveSBT": [
-                {"name": "emitent", "type": "address"},
-                {"name": "to", "type": "address"},
-                {"name": "nonce", "type": "uint256"},
-                {"name": "path", "type": "string"},
-            ],
-        },
-        "primaryType": "approveSBT",
-        "domain": {
-            "name": "SBT",
-            "version": "1",
-            "chainId": 31337,
-            "verifyingContract": "0x6B21b3ae41f818Fc91e322b53f8D0773d31eCB75",
-        },
-        "message": {"emitent": from_addr, "to": to_addr, "nonce": nonce, "path": path},
-    }
-
-
-def sign_message(message: Dict[str, Any]) -> SignedMessage:
-    w3 = Web3()
-    priv_key = "59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d"
-    w3.eth.default_account = w3.eth.account.privateKeyToAccount(priv_key)
-
-    signed = w3.eth.default_account.sign_message(encode_structured_data(message))
-    return signed
 
 
 async def upload_to_ipfs(data: bytes) -> Dict[str, str]:
